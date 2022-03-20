@@ -19,8 +19,7 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - run: npm install newman
-    - run: npm install newman-reporter-htmlextra
+    - run: npm install -g newman newman-reporter-htmlextra
     - run: newman run TACIT.postman_collection.json -e Tacit.postman_environment.json -r htmlextra
     - run: pwd
     - run: ls
@@ -37,6 +36,7 @@ jobs:
          # email subject
          subject: Tacit GraphQL API Test Suite Results - ${{ job.status }}
          # email body as text
+         body: Please see the attached report.
          # comma-separated string, send email to
          to: ayodeji.adedeji@exquisappfactory.com
          # from email name
