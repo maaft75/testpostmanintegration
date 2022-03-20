@@ -39,7 +39,7 @@ jobs:
          # email body as text
          body: Please see the attached report.
          # comma-separated string, send email to
-         to: ayodeji.adedeji@exquisappfactory.com
+         to: ayodeji.adedeji@exquisappfactory.com, abimbola.adebayo@exquisappfactory.com
          # from email name
          from: Tacit GraphQL API Test
          attachments: /home/runner/work/testpostmanintegration/testpostmanintegration/newman/tacit_graphql_api_report.html
