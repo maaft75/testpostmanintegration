@@ -22,6 +22,8 @@ jobs:
     - run: npm install newman
     - run: npm install newman-reporter-htmlextra
     - run: newman run TACIT.postman_collection.json -e Tacit.postman_environment.json -r htmlextra
+    - run: pwd
+    - run: ls
     - name: Send mail
       if: always()
       uses: dawidd6/action-send-mail@v2
@@ -35,7 +37,6 @@ jobs:
          # email subject
          subject: Tacit GraphQL API Test Suite Results - ${{ job.status }}
          # email body as text
-         body:  AUTH>> ${{ toJson(steps.auth_service.outputs.auth) }} | PROFILE>> ${{ toJson(steps.profile_service.outputs.profile) }} | SKILLS >> ${{ toJson(steps.skill_service.outputs.skill) }}
          # comma-separated string, send email to
          to: ayodeji.adedeji@exquisappfactory.com
          # from email name
