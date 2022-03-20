@@ -22,7 +22,7 @@ jobs:
     - run: npm install -g newman newman-reporter-htmlextra
     - run: newman run TACIT.postman_collection.json -e Tacit.postman_environment.json -r htmlextra
     - run: pwd
-    - run: ls
+    - run: ls ./newman
     - name: Send mail
       if: always()
       uses: dawidd6/action-send-mail@v2
