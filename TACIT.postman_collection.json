@@ -1,0 +1,703 @@
+{
+	"info": {
+		"_postman_id": "9e11b54d-dcf5-4a14-adeb-f90d8cd5feb9",
+		"name": "TACIT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth Service",
+			"item": [
+				{
+					"name": "Create User - Existent Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"pm.test('Already Registered', function(){\r",
+									"    pm.expect(jsonData.errors[0].message).to.be.equal(\"ALREADY_REGISTERED\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateUser{\r\n  manageCredential(\r\n    isNew: true, \r\n    email: \"ayodejiadedeji8@gmail.com\", \r\n    password: \"tygertyger\"\r\n  ){\r\n    status\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User - Blank Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"pm.test('Blank Email', function(){\r",
+									"    pm.response.to.have.status(500)\r",
+									"    pm.expect(jsonData.errors.detail).to.be.equal(\"Internal Server Error\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateUser{\r\n  manageCredential(\r\n    isNew: true, \r\n    email: \"\", \r\n    password: \"tygertyger\"\r\n  ){\r\n    status\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User - Blank Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"pm.test('Blank Password', function(){\r",
+									"    pm.response.to.have.status(500)\r",
+									"    pm.expect(jsonData.errors.detail).to.be.equal(\"Internal Server Error\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateUser{\r\n  manageCredential(\r\n    isNew: true, \r\n    email: \"ayodejiadedeji8@gmail.com\", \r\n    password: \"\"\r\n  ){\r\n    status\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify User - Invalid Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"pm.test('Invalid Token', function(){\r",
+									"    pm.expect(jsonData.errors[0].message).to.be.equal(\"INVALID_VERIFICATION_TOKEN\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation verifyUser {\r\n  manageCredential(verificationToken: \"SFMyNTY.g2gDdAAAAAJkAAVlbWFpbG0AAAAZYXlvZGVqaWFkZWRlamk4QGdtYWlsLmNvbWQABW5vbmNlbgYANRvsaX8BbgYANRvsaX8BYgABUYA.WGIZCw6zDrTEft50XhikvYjEEwhUacRr21STB43NLL\"){\r\n    status\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Valid Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"\r",
+									"pm.collectionVariables.set('access_token', jsonData.data.manageCredential.token)\r",
+									"\r",
+									"pm.test('Valid Payload', function(){\r",
+									"    pm.expect(jsonData.data.manageCredential.token).to.be.not.null\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation LoginUser {\r\n  manageCredential(email: \"ayodejiadedeji8@gmail.com\", password: \"tygertyger\"){\r\n    token\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Unregistered Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"\r",
+									"pm.test('UNREGISTERED EMAIL', function(){\r",
+									"    pm.expect(jsonData.errors[0].message).to.be.equal(\"NO_CREDENTIAL_FOUND\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation LoginUser {\r\n  manageCredential(email: \"jusmith@gmail.com\", password: \"colpas\"){\r\n    token\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Wrong Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"\r",
+									"pm.test('WRONG PASSWORD', function(){\r",
+									"    pm.expect(jsonData.errors[0].message).to.be.equal(\"INVALID_CREDENTIAL\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation LoginUser {\r\n  manageCredential(email: \"ayodejiadedeji8@gmail.com\", password: \"colpas\"){\r\n    token\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Reset Password Link",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"\r",
+									"pm.test('SEND PASSWORD RESET LINK', function(){\r",
+									"    pm.expect(jsonData.data.manageCredential.status).to.be.equal(\"SUCCESS\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation SendResetPasswordLink {\r\n  manageCredential(sendChangePasswordLink: true, email: \"ayodejiadedeji8@gmail.com\"){\r\n    status\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password - Invalid Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"\r",
+									"pm.test('CHANGE PASSWORD - INVALID TOKEN', function(){\r",
+									"    pm.expect(jsonData.errors[0].message).to.be.equal(\"INVALID_TOKEN\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation ResetPasswordLink {\r\n  manageCredential(changePasswordResetToken: \"long-change-password-token\", password: \"new-password\"){\r\n    status\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}",
+							"host": [
+								"{{authUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile Service",
+			"item": [
+				{
+					"name": "Create Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateNewProfile {\r\n  profile(isNew: true, name: \"Michael\", bio: \"Jiggy\", profession: \"QA Engineer\", profileImageUrl: \"http://no-png.png\"){\r\n    name,\r\n    bio,\r\n    profession,\r\n    profileImageUrl\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{profileUrl}}",
+							"host": [
+								"{{profileUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile - Blank Details",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateExistingProfile {\r\n  profile(name: \"\", bio: \"\", profession: \"QA Engineer\", profileImageUrl: \"http://some-more-png.png\"){\r\n    name,\r\n    bio,\r\n    profession,\r\n    profileImageUrl\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{profileUrl}}",
+							"host": [
+								"{{profileUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateExistingProfile {\r\n  profile(name: \"Michael\", bio: \"Yeah\", profession: \"DevOps Engineer\", profileImageUrl: \"http://some-png.png\"){\r\n    name,\r\n    bio,\r\n    profession,\r\n    profileImageUrl\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{profileUrl}}",
+							"host": [
+								"{{profileUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetProfile {\r\n  profile{\r\n    name,\r\n    bio,\r\n    profession,\r\n    profileImageUrl\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{profileUrl}}",
+							"host": [
+								"{{profileUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{access_token}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "Authorization",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Skill Service",
+			"item": [
+				{
+					"name": "Read Skills",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ReadSkills {\r\n  skills {\r\n    status,\r\n    id,\r\n    images,\r\n    links,\r\n    title,\r\n    description,\r\n    updatedAt\r\n  }\r\n}\r\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{skillUrl}}",
+							"host": [
+								"{{skillUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Skills with Id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ReadSkills($id: String) {\r\n  skill(id: $id) {\r\n    status,\r\n    id,\r\n    images,\r\n    links,\r\n    title,\r\n    description,\r\n    updatedAt\r\n  }\r\n}",
+								"variables": "{\r\n\t\"id\": \"{{skillId}}\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{skillUrl}}",
+							"host": [
+								"{{skillUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Skill",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json()\r",
+									"pm.collectionVariables.set('skillId', jsonData.data.skill.id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateNewSkill {\r\n  skill(isNew: true, \r\n    images: [\"backend.png\", \"backend.png\"], \r\n    links: [\"https://backend.com\"],\r\n    tags: [\"backend\", \"QA\", \"dev\"],\r\n    title: \"Backend development\",\r\n    description: \"Building backend services\",\r\n  ) {\r\n    status,\r\n    id,\r\n    images,\r\n    links,\r\n    title,\r\n    description,\r\n    updatedAt\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{skillUrl}}",
+							"host": [
+								"{{skillUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Skill - No Title",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateNewSkill {\r\n  skill(isNew: true, \r\n    images: [\"backend.png\", \"backend.png\"], \r\n    links: [\"https://backend.com\"],\r\n    tags: [\"backend\", \"QA\", \"dev\"],\r\n    title: \"\",\r\n    description: \"Building backend services\",\r\n  ) {\r\n    status,\r\n    id,\r\n    images,\r\n    links,\r\n    title,\r\n    description,\r\n    updatedAt\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{skillUrl}}",
+							"host": [
+								"{{skillUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Skill - No Description",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateNewSkill {\r\n  skill(isNew: true, \r\n    images: [\"backend.png\", \"backend.png\"], \r\n    links: [\"https://backend.com\"],\r\n    tags: [\"backend\", \"QA\", \"dev\"],\r\n    title: \"Backend development\",\r\n    description: \"\",\r\n  ) {\r\n    status,\r\n    id,\r\n    images,\r\n    links,\r\n    title,\r\n    description,\r\n    updatedAt\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{skillUrl}}",
+							"host": [
+								"{{skillUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Skill",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//request.data.skill.id = pm.collectionVariables.get('skillId')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateSkill {\r\n  skill(\r\n    id: \"{{skillId}}\",\r\n    images: [\"simple-image.png\", \"cool.png\"], \r\n    links: [\"https://simple-link.com\"],\r\n    tags: [\"test-tag\", \"cool-tag\", \"simple-tag\"],\r\n    title: \"Updated skill title\",\r\n    description: \"Updated skill description successfully\",\r\n  ) {\r\n    status,\r\n    id,\r\n    images,\r\n    links,\r\n    title,\r\n    description,\r\n    updatedAt\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{skillUrl}}",
+							"host": [
+								"{{skillUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Skill - No Description",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateSkill {\r\n  skill(\r\n    id: \"{{skillId}}\",\r\n    images: [\"simple-image.png\", \"cool.png\"], \r\n    links: [\"https://simple-link.com\"],\r\n    tags: [\"test-tag\", \"cool-tag\", \"simple-tag\"],\r\n    title: \"Updated skill title\",\r\n    description: \"\",\r\n  ) {\r\n    status,\r\n    id,\r\n    images,\r\n    links,\r\n    title,\r\n    description,\r\n    updatedAt\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{skillUrl}}",
+							"host": [
+								"{{skillUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Skill - No Title",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateSkill {\r\n  skill(\r\n    id: \"{{skillId}}\",\r\n    images: [\"simple-image.png\", \"cool.png\"], \r\n    links: [\"https://simple-link.com\"],\r\n    tags: [\"test-tag\", \"cool-tag\", \"simple-tag\"],\r\n    title: \"\",\r\n    description: \"Updated skill description\",\r\n  ) {\r\n    status,\r\n    id,\r\n    images,\r\n    links,\r\n    title,\r\n    description,\r\n    updatedAt\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{skillUrl}}",
+							"host": [
+								"{{skillUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{access_token}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "Authorization",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "skillId",
+			"value": ""
+		}
+	]
+}
